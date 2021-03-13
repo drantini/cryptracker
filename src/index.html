@@ -9,10 +9,17 @@
 
   </head>
   <body>
+    <label for="cryptos">Add cryptocurrency(BTC,LTC..):</label>
 
-    <label for="cryptos">Add cryptocurrency(BTC,ETH,CHZ...):</label><br>
     <input type="text" id="crypto-to-add">
     <button id="add-crypto">Add</button><br>
+    <div class="dropdown">
+      <button class="dropbtn">Currency</button>
+      <div class="dropdown-content">
+        <a id="USD-btn">USD</a>
+        <a id="EUR-btn">EUR</a>
+      </div>
+    </div> 
     <div id="cryptos">
 
     </div>
