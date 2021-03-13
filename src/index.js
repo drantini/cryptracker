@@ -5,9 +5,6 @@ const path = require('path');
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
-try {
-  require('electron-reloader')(module)
-} catch (_) {}
 
 
 const createWindow = () => {
@@ -64,3 +61,6 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+try {
+  require('electron-reloader')(module)
+} catch (_) {}

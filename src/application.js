@@ -1,3 +1,4 @@
+
 const btc_price = document.getElementById('btc-price')
 const crypto_code = document.getElementById('crypto-to-add')
 const add_btn = document.getElementById('add-crypto')
@@ -9,25 +10,31 @@ eur_btn.onclick = setEUR;
 
 var cryptos = ['BTC']
 var currency = 'USD'
+
 let crypto_information = [
     
 ]
-function setUSD(){
+
+
+async function setUSD(){
     currency = 'USD'
     doParse()
 }
-function setEUR(){
+async function setEUR(){
     currency = 'EUR'
     doParse()
 }
+
 async function doParse(){
 
     const prices = await window.electron.parsePrices();
     cryptos.forEach(crypto => {
         var lower_case = crypto.toLowerCase()
         const price_id = document.getElementById(`${lower_case}-price`)
+        const change_id = document.getElementById(`${lower_case}-change`)
         const price = prices[crypto][currency]
         
+
         let old_information = crypto_information.find(crypto => crypto.name == lower_case)
         if (old_information != null && old_information.price != 0){
             const old_price = old_information.price
@@ -39,6 +46,12 @@ async function doParse(){
             }else{
                 price_id.style.color = "black"
             }
+            const difference = price - old_price
+            if (difference != 0){
+                change_id.innerHTML = difference > 0 ? `+${difference.toFixed(2)}` : `${difference.toFixed(2)}`
+            }
+
+
         }
         price_id.innerHTML = `${price}` + (currency == 'USD' ? '$': '€')
         if (old_information == null){
@@ -69,10 +82,11 @@ function RenderCrypto(){
         
         document.getElementById('cryptos').innerHTML += `
         <br><br>
-        <span>${crypto}</span>
-        <h2 id="${crypto.toLowerCase()}-price">
+        <span>${crypto}</span></br>
+        <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block;">
         0.00$
         </h2>
+        <small id="${crypto.toLowerCase()}-change"></small>
         `
     })
 }
