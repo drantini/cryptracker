@@ -18,10 +18,15 @@ let crypto_information = [
 
 async function setUSD(){
     currency = 'USD'
+    //clear the information due to currency change
+    crypto_information = []
     doParse()
+
 }
 async function setEUR(){
     currency = 'EUR'
+    //clear the information due to currency change
+    crypto_information = []
     doParse()
 }
 
@@ -48,7 +53,13 @@ async function doParse(){
             }
             const difference = price - old_price
             if (difference != 0){
-                change_id.innerHTML = difference > 0 ? `+${difference.toFixed(2)}` : `${difference.toFixed(2)}`
+                var diff_to_print
+                if (price < 1){
+                    diff_to_print = difference.toFixed(6)
+                }else{
+                    diff_to_print = difference.toFixed(2)
+                }
+                change_id.innerHTML = difference > 0 ? `+${diff_to_print}` : `${diff_to_print}`
             }
 
 
@@ -82,13 +93,24 @@ function RenderCrypto(){
         
         document.getElementById('cryptos').innerHTML += `
         <br><br>
-        <span>${crypto}</span></br>
+        <span>${crypto}</span>    <button id="remove-${crypto}">Remove</button><br>
+        </br>
         <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block;">
         0.00$
         </h2>
         <small id="${crypto.toLowerCase()}-change"></small>
         `
+        document.getElementById(`remove-${crypto}`).addEventListener("click", function(){
+            const index = cryptos.indexOf(crypto)
+            if (index > -1){
+              cryptos.splice(index, 1)
+            }
+            window.electron.removeCryptoFromList(crypto)
+            RenderCrypto()
+            doParse()
+        })
     })
+
 }
 RenderCrypto()
 function addCryptoCurrency(){
@@ -99,4 +121,7 @@ function addCryptoCurrency(){
     RenderCrypto()
     doParse()
 
+}
+function removeCrypto(cryptocurrency){
+    console.log(cryptocurrency)
 }

@@ -39,7 +39,12 @@ contextBridge.exposeInMainWorld(
     addCryptoToList: (code) => {
       //TODO: add sanity checks
       cryptos.push(code)
-      cryptos.forEach(crypto => console.log(crypto))
+    },
+    removeCryptoFromList: (code) => {
+      const index = cryptos.indexOf(code)
+      if (index > -1){
+        cryptos.splice(index, 1)
+      }
     }
   }
 )
