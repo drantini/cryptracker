@@ -8,18 +8,21 @@
 
   </head>
   <body>
-    <label for="cryptos">Add cryptocurrency(BTC,LTC..):</label>
-
-    <input type="text" id="crypto-to-add">
-    <button id="add-crypto">Add</button><br>
-    <div class="dropdown">
-      <button class="dropbtn">Currency</button>
-      <div class="dropdown-content">
-        <a id="USD-btn">USD</a>
-        <a id="EUR-btn">EUR</a>
+    <div class="options">
+      <div style="margin-right: 15px;">
+        <input type="text" id="crypto-to-add" placeholder="ETH" style="text-transform: uppercase;"><br>
+        <button id="add-crypto" >Add</button><br>
       </div>
-    </div> 
-    <div id="cryptos">
+      <div class="dropdown" style="top: 20px">
+        <button class="dropbtn" style="width: 100px; ">Currency</button>
+        <div class="dropdown-content">
+          <a id="USD-btn">USD</a>
+          <a id="EUR-btn">EUR</a>
+        </div>
+      </div> 
+    </div>
+
+    <div class="cryptos" id="cryptos">
 
     </div>
 

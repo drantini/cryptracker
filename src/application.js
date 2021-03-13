@@ -91,14 +91,14 @@ function RenderCrypto(){
     document.getElementById('cryptos').innerHTML = ''
     cryptos.forEach(crypto => {
         
-        document.getElementById('cryptos').innerHTML += `
-        <br><br>
-        <span>${crypto}</span>    <button id="remove-${crypto}">Remove</button><br>
-        </br>
+        document.getElementById('cryptos').innerHTML += `<div class="crypto">
+        <br>
+        <span>${crypto}</span>    <button style="border: none; position: absolute; top: -5px; right: 5px;" id="remove-${crypto}">X</button><br>
         <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block;">
         0.00$
         </h2>
         <small id="${crypto.toLowerCase()}-change"></small>
+        </div>
         `
         document.getElementById(`remove-${crypto}`).addEventListener("click", function(){
             const index = cryptos.indexOf(crypto)
@@ -114,9 +114,12 @@ function RenderCrypto(){
 }
 RenderCrypto()
 function addCryptoCurrency(){
-    
-    cryptos.push(crypto_code.value)
-    window.electron.addCryptoToList(crypto_code.value)
+    if (crypto_code.value == ""){
+        return
+    }
+    var corrected = crypto_code.value.toUpperCase()
+    cryptos.push(corrected)
+    window.electron.addCryptoToList(corrected)
     crypto_code.value = ""
     RenderCrypto()
     doParse()
