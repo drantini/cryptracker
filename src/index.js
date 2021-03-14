@@ -18,6 +18,7 @@ const createWindow = () => {
 
     }
   });
+  mainWindow.setResizable(false);
   mainWindow.removeMenu()
 
   // and load the index.html of the app.

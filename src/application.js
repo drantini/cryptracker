@@ -4,9 +4,12 @@ const crypto_code = document.getElementById('crypto-to-add')
 const add_btn = document.getElementById('add-crypto')
 const usd_btn = document.getElementById('USD-btn')
 const eur_btn = document.getElementById('EUR-btn')
+const port_balance = document.getElementById('balance')
+const add_port_coin = document.getElementById('add-portfolio-coin')
 add_btn.onclick = addCryptoCurrency;
 usd_btn.onclick = setUSD;
 eur_btn.onclick = setEUR;
+add_port_coin.onclick = addPortfolioCoin;
 
 var cryptos = ['BTC']
 var currency = 'USD'
@@ -14,7 +17,6 @@ var currency = 'USD'
 let crypto_information = [
     
 ]
-
 
 async function setUSD(){
     currency = 'USD'
@@ -49,7 +51,7 @@ async function doParse(){
             }else if (old_price < price){
                 price_id.style.color = "green"
             }else{
-                price_id.style.color = "black"
+                price_id.style.color = "white"
             }
             const difference = price - old_price
             if (difference != 0){
@@ -91,15 +93,20 @@ function RenderCrypto(){
     document.getElementById('cryptos').innerHTML = ''
     cryptos.forEach(crypto => {
         
-        document.getElementById('cryptos').innerHTML += `<div class="crypto">
+        document.getElementById('cryptos').innerHTML += `<div class="crypto-${crypto}">
         <br>
-        <span>${crypto}</span>    <button style="border: none; position: absolute; top: -5px; right: 5px;" id="remove-${crypto}">X</button><br>
+        <span>${crypto}</span>    <button style="color: white; border: none; position: absolute; top: -5px; right: 5px;" id="remove-${crypto}">X</button><br>
         <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block;">
         0.00$
         </h2>
         <small id="${crypto.toLowerCase()}-change"></small>
         </div>
         `
+        var crypto_tab = document.getElementsByClassName(`crypto-${crypto}`)[0]
+        crypto_tab.addEventListener("contextmenu", function(e){
+            e.stopPropagation();
+            e.preventDefault();
+        })
         document.getElementById(`remove-${crypto}`).addEventListener("click", function(){
             const index = cryptos.indexOf(crypto)
             if (index > -1){
@@ -125,6 +132,6 @@ function addCryptoCurrency(){
     doParse()
 
 }
-function removeCrypto(cryptocurrency){
-    console.log(cryptocurrency)
+function addPortfolioCoin(){
+    window.electron.addPorfolioCoinWindow();
 }

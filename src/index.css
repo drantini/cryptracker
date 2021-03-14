@@ -3,27 +3,69 @@ body {
   margin: auto;
   max-width: 90rem;
   padding: 0rem;
+  background: rgb(70,70,70);
 
 }
-.cryptos{
-  border-radius: 10px;
-  background: rgb(210, 210, 210); 
-  position: relative;
-  left: 20px;
-  top: 15px;
-  padding-left: 15px;
 
-  display: flex;
-  flex-direction:column;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  width: 745px;
-  height: 468px;
+
+.bar1, .bar2, .bar3 {
+  width: 35px;
+  height: 5px;
+  background-color: rgb(180,180,180);
+  margin: 6px 0;
+  transition: 0.4s;
+  border-radius: 2px;
 }
-.crypto{
-  background: rgb(190,190,190);
-  border-radius: 15px;
+ /* The side navigation menu */
+ .sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+} 
+
+div[class^='crypto-'], div[class*=' crypto-']{
+  background: rgb(50,50,50);
+  outline: 1px solid rgb(80,80,80);
   width: 180px;
+
+  color: white;
   text-align: center;
   position:relative;
   top: 15px;
@@ -32,18 +74,56 @@ body {
 }
 
 .options{
+  display:flex;
+  padding-bottom: 15px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.side{
+  position:absolute;
+  left: 0px;
+  top: 80px;
+  display:flex;
+  justify-content: flex-end;
+  flex-direction: column
+}
+.add-coin-div{
+  display:inherit;
+  flex-direction: inherit;
+  justify-content: inherit;
+
+
+}
+.portfolio-show{
+  background: rgb(40,40,40);
+  padding-left: 10px;
+  padding-top: 10px;
+  line-height: 10px;
+  color: rgb(155,155,155);
+  width: 190px;
+  height: 60px;
+
+}
+.cryptos{
+  border-radius: 5px;
+  background: rgb(60, 60, 60);
+
+  margin-right: 15px;
+  margin-left: 220px;
+  height: 530px;
+  padding-left: 15px;
+
   display: flex;
   flex-direction:column;
   flex-wrap: wrap;
   align-content: flex-start;
-  border-radius: 10px;
-  padding-left: 30px;
-  padding-top: 10px;
-  height: 70px;
-  margin: 10px 20px;
-  background: rgb(220,220,220);
-  background: linear-gradient(90deg, rgba(220,220,220,1) 0%, rgba(190,190,190,1) 100%); 
+}
 
+.main{
+  padding-left: 15px;
+  height: 600px;
+  background: rgb(30,30,30);
 }
  /* Button */
 button {
@@ -51,7 +131,8 @@ button {
   padding: 4px;
   margin-top: 10px;
   font-size: 14px;
-  border: 1px solid black;
+  color: rgb(180,180,180);
+  border: 1px solid rgb(180,180,180);
   border-radius: 5px;
 }
 
@@ -74,10 +155,12 @@ button {
 input[type=text] {
   background: transparent;
   border: none;
-  border-bottom: 2px solid black;
+  text-align: center;
+  color: white;
+  border-bottom: 2px solid rgb(180,180,180);
 }
 ::placeholder{
-  color:rgb(95, 95, 95)
+  color:rgb(155, 155, 155)
 }
 /* Links inside the dropdown */
 .dropdown-content a {

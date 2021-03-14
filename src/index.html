@@ -5,26 +5,68 @@
     <title>CrypTracker</title>
     <link rel="stylesheet" href="index.css">
     <script defer src="application.js"></script>
+    <script>
+            /* Set the width of the side navigation to 235px */
+      function openNav() {
+        document.getElementById("mySidenav").style.width = "235px";
+      }
 
+      /* Set the width of the side navigation to 0 */
+      function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+      } 
+    </script>
   </head>
   <body>
-    <div class="options">
-      <div style="margin-right: 15px;">
-        <input type="text" id="crypto-to-add" placeholder="ETH" style="text-transform: uppercase;"><br>
-        <button id="add-crypto" >Add</button><br>
-      </div>
-      <div class="dropdown" style="top: 20px">
-        <button class="dropbtn" style="width: 100px; ">Currency</button>
-        <div class="dropdown-content">
-          <a id="USD-btn">USD</a>
-          <a id="EUR-btn">EUR</a>
+
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="#">Portfolio</a>
+      <a href="#">Prices</a>
+    </div>
+    
+    <!-- Use any element to open the sidenav -->
+
+    <div class="main">
+      <div class="options">
+
+        <div class="side">
+          <div class="portfolio-show">
+            <small>Portfolio balance</small><br>
+            <h2 id="balance" style="color:white">0.00$</h2>
+          </div>
+          <div class="owned-coins">
+
+
+          </div>
+          <div class="add-coin-div" >          
+            <button id="add-portfolio-coin">Add Coin</button>
+          </div>
         </div>
-      </div> 
+        <div onclick="openNav()" style="position: absolute; top:3px; left:10px;">
+          <div class="bar1"></div>
+          <div class="bar2"></div>
+          <div class="bar3"></div>
+        </div>
+        <input type="text" id="crypto-to-add" placeholder="Add Cryptocurrency" style="text-transform: uppercase; margin-right: 10px;"><br>
+
+
+        <button id="add-crypto">Add</button><br>
+
+        <div class="dropdown" style="margin-left: 15px;">
+          <button class="dropbtn" style="width: 100px; ">Currency</button>
+          <div class="dropdown-content">
+            <a id="USD-btn">USD</a>
+            <a id="EUR-btn">EUR</a>
+          </div>
+        </div> 
+      </div>
+      <div class="cryptos" id="cryptos">
+
+      </div>
     </div>
 
-    <div class="cryptos" id="cryptos">
 
-    </div>
 
   </body>
   

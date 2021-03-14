@@ -1,9 +1,23 @@
-const { contextBridge, ipcRenderer} = require('electron')
+const { contextBridge, ipcRenderer, Menu} = require('electron')
 const electron = require('electron'); 
+const path = require('path');
+
+
 var cryptos = []
 contextBridge.exposeInMainWorld(
   'electron',
   {
+    addPorfolioCoinWindow: () =>{
+      const app = electron.remote.app;
+      const BrowserWindow = electron.remote.BrowserWindow;
+      const AddWindow = new BrowserWindow({
+        height: 300,
+        width: 350,
+      });
+      AddWindow.setResizable(false);
+      AddWindow.removeMenu()
+      AddWindow.loadFile(path.join(app.getAppPath(), 'src/add.html'));
+    },
     parsePrices:  () => {
       return new Promise((resolve,reject) => {
       var result = "";
@@ -45,7 +59,8 @@ contextBridge.exposeInMainWorld(
       if (index > -1){
         cryptos.splice(index, 1)
       }
-    }
+    },
+
   }
 )
 
