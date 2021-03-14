@@ -82,7 +82,6 @@ div[class^='crypto-'], div[class*=' crypto-']{
 div[class^='owned-'], div[class*=' owned-']{
   position: relative; 
   top: 15px;
-
   color: white;
   display:flex;
   flex-direction: row;
@@ -93,7 +92,7 @@ div[class^='owned-'], div[class*=' owned-']{
 
 .options{
   display:flex;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
@@ -119,7 +118,7 @@ div[class^='owned-'], div[class*=' owned-']{
   padding-top: 10px;
   line-height: 10px;
   color: rgb(155,155,155);
-  width: 175px;
+  width: 170px;
   height: 60px;
 
 }
@@ -128,8 +127,8 @@ div[class^='owned-'], div[class*=' owned-']{
   background: rgb(60, 60, 60);
 
   margin-right: 15px;
-  margin-left: 185px;
-  height: 475px;
+  margin-left: 180px;
+  height: 485px;
   padding-left: 15px;
 
   display: flex;
@@ -144,7 +143,7 @@ div[class^='owned-'], div[class*=' owned-']{
   margin-left: -15px;
   margin-top: 35px;
   width: 800px;
-  height: 39px;
+  height: 34px;
 }
 
 .main{
@@ -213,3 +212,4 @@ div[class^='hchange-'], div[class*=' hchange-']{
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {background-color: #bec0be;} 
+

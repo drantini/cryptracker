@@ -11,6 +11,8 @@ usd_btn.onclick = setUSD;
 eur_btn.onclick = setEUR;
 add_port_coin.onclick = addPortfolioCoinPopup;
 
+const Store = require('electron-store')
+const store = new Store();
 const electron = require('electron')
 const path = require('path')
 const ipc = electron.ipcRenderer;
@@ -18,13 +20,23 @@ const ipc = electron.ipcRenderer;
 var cryptos = ['BTC']
 var owned_cryptos = []
 var currency = 'USD'
-
+if (store.get('currency') != null){
+    currency = store.get('currency')
+}
+if (store.get('cryptos') != null){
+    cryptos = store.get('cryptos')
+}
 let crypto_information = [
     
 ]
 let owned_crypto_information = [
 
 ]
+if (store.get('owned_cryptos') != null){
+    owned_cryptos = store.get('owned_cryptos')
+    owned_crypto_information = store.get('owned_cryptos_information')
+    RenderPortfolio()
+}
 
 Number.prototype.countDecimals = function () {
     if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
@@ -36,7 +48,6 @@ function removeCrypto(code){
       cryptos.splice(index, 1)
     }
 }
-
 function addPorfolioCoinWindow(){
 
     const app = electron.remote.app;
@@ -52,13 +63,35 @@ function addPorfolioCoinWindow(){
       }
     });
     var cursor_pos = screen.getCursorScreenPoint()
-    AddWindow.setPosition(cursor_pos.x, cursor_pos.y);
+    AddWindow.setPosition(cursor_pos.x - 100, cursor_pos.y - 175);
     AddWindow.setResizable(false);
     //AddWindow.webContents.openDevTools();
 
     AddWindow.removeMenu()
     AddWindow.loadFile(path.join(app.getAppPath(), 'src/add.html'));
-  }
+}
+function addNotifyCoinWindow(){
+
+    const app = electron.remote.app;
+    const BrowserWindow = electron.remote.BrowserWindow;
+    const screen = electron.remote.screen;
+    const NotifyWindow = new BrowserWindow({
+      height: 200,
+      width: 350,
+      webPreferences: {
+        enableRemoteModule: true,
+        nodeIntegration: true,
+        contextIsolation: false,
+      }
+    });
+    var cursor_pos = screen.getCursorScreenPoint()
+    NotifyWindow.setPosition(cursor_pos.x - 100, cursor_pos.y - 175);
+    NotifyWindow.setResizable(false);
+    //AddWindow.webContents.openDevTools();
+
+    NotifyWindow.removeMenu()
+    NotifyWindow.loadFile(path.join(app.getAppPath(), 'src/notify.html'));
+}
 
 function parsePrices(cryptos_to_parse){
     return new Promise((resolve,reject) => {
@@ -97,6 +130,7 @@ async function setUSD(){
     crypto_information = []
     doParse()
     UpdatePortfolio()
+    store.set('currency', currency)
 }
 async function setEUR(){
     currency = 'EUR'
@@ -104,6 +138,7 @@ async function setEUR(){
     crypto_information = []
     doParse()
     UpdatePortfolio()
+    store.set('currency', currency)
 
 }
 
@@ -195,7 +230,7 @@ function RenderCrypto(){
         <button style="color: white; border: none; position: absolute; top: -8px; right: 3px;" id="remove-${crypto}">X</button><br>
         <button style="color: white; border: none; position: absolute; top: -8px; right: 23px;" id="notify-${crypto}">!</button><br>
 
-        <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block; margin-top: 5px;">
+        <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block; margin-top: -10px;">
         0.00$
         </h2>
         <small id="${crypto.toLowerCase()}-change"></small>
@@ -212,11 +247,10 @@ function RenderCrypto(){
             e.stopPropagation();
             e.preventDefault();
         })
+        document.getElementById(`notify-${crypto}`).addEventListener("click", function(){
+            addNotifyCoinWindow()
+        })
         document.getElementById(`remove-${crypto}`).addEventListener("click", function(){
-            const index = cryptos.indexOf(crypto)
-            if (index > -1){
-              cryptos.splice(index, 1)
-            }
             removeCrypto(crypto)
             RenderCrypto()
             doParse()
@@ -229,7 +263,7 @@ function RenderPortfolio(){
 
     owned_cryptos.forEach(crypto => {
         document.getElementById('owned-coins').innerHTML += `            
-        <div class="owned-${crypto}">
+        <div class="owned-${crypto}" id="owned-${crypto}">
             <div>
             <img id="${crypto}-img-port" width="22" height="22" >
             <span id="${crypto}-owned-name" style="position: relative; top:-5px;">Parsing..</span>
@@ -239,8 +273,19 @@ function RenderPortfolio(){
             <small id="${crypto}-owned-amount">NaN</small><br>
             <span id="${crypto}-owned-price">NaN$</span>
             </div>
-            
-        </div><br>`
+        </div>`
+    })
+    owned_cryptos.forEach(crypto => {
+        document.getElementById(`owned-${crypto}`).addEventListener('contextmenu', function(){
+
+            const index = owned_cryptos.indexOf(crypto)
+            if (index > -1){
+                owned_cryptos.splice(index, 1)
+            }
+
+            RenderPortfolio();
+
+        })
     })
     UpdatePortfolio()
 
@@ -262,9 +307,10 @@ async function UpdatePortfolio(){
 
         image.src = "https://www.cryptocompare.com" + prices.RAW[upper_case][currency]["IMAGEURL"];
         name.innerHTML = upper_case
+
     })
     var portfolio_balance = document.getElementById('balance')
-    portfolio_balance.innerHTML = balance + (currency == 'USD' ? '$': '€')
+    portfolio_balance.innerHTML = balance.toFixed(2) + (currency == 'USD' ? '$': '€')
 
 }
 setInterval(UpdatePortfolio, 7 * 1000)
@@ -279,6 +325,7 @@ function addCryptoCurrency(){
     crypto_code.value = ""
     RenderCrypto()
     doParse()
+    store.set('cryptos', cryptos)
 
 }
 function addPortfolioCoinPopup(){
@@ -302,4 +349,8 @@ ipc.on("new-coin-parse", function(event, arg){
     }
     RenderPortfolio();
 
+    store.set('owned_cryptos', owned_cryptos)
+    store.set('owned_cryptos_information', owned_crypto_information)
+
 })
+
