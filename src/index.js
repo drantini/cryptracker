@@ -7,7 +7,8 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
   app.quit();
 }
 
-
+const Store = require('electron-store')
+Store.initRenderer();
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -27,13 +28,12 @@ const createWindow = () => {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
   ipc.on("new-coin", function(event, arg){
-    console.log(arg)
     mainWindow.webContents.send("new-coin-parse", arg)
 
   })
   
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
   /*tray = new Tray(path.join(app.getAppPath(), 'btc_logo.png'))
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Item1', type: 'normal' },

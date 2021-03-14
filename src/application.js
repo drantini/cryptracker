@@ -32,6 +32,7 @@ let crypto_information = [
 let owned_crypto_information = [
 
 ]
+
 if (store.get('owned_cryptos') != null){
     owned_cryptos = store.get('owned_cryptos')
     owned_crypto_information = store.get('owned_cryptos_information')
@@ -279,10 +280,16 @@ function RenderPortfolio(){
         document.getElementById(`owned-${crypto}`).addEventListener('contextmenu', function(){
 
             const index = owned_cryptos.indexOf(crypto)
+            const index_2 = owned_crypto_information.findIndex(crypto_buf => crypto_buf.name == crypto)
             if (index > -1){
                 owned_cryptos.splice(index, 1)
             }
+            if (index_2 > -1){
+                owned_crypto_information.splice(index_2, 1)
+            }
 
+            store.set('owned_cryptos', owned_cryptos)
+            store.set('owned_cryptos_information', owned_crypto_information)
             RenderPortfolio();
 
         })
@@ -291,6 +298,9 @@ function RenderPortfolio(){
 
 }
 async function UpdatePortfolio(){
+    if (owned_cryptos.length < 1){
+        document.getElementById('owned-coins').innerHTML = ''
+    }
     const prices = await parsePrices(owned_cryptos);
     var balance = 0;
     owned_cryptos.forEach(crypto => {
@@ -341,11 +351,17 @@ ipc.on("new-coin-parse", function(event, arg){
             "amount": parseFloat(arg.amount)
         }
         owned_cryptos.push(coin_name)
-
         owned_crypto_information.push(information)
     }else{
-        crypto_index = owned_crypto_information.findIndex(crypto => crypto.name == coin_name)
-        owned_crypto_information[crypto_index].amount += parseFloat(arg.amount)
+        if (owned_cryptos.findIndex(crypto => crypto == coin_name.toUpperCase()) < 0){
+            owned_cryptos.push(coin_name)
+            crypto_index = owned_crypto_information.findIndex(crypto => crypto.name == coin_name)
+            owned_crypto_information[crypto_index].amount += parseFloat(arg.amount)
+            
+        }else{
+            crypto_index = owned_crypto_information.findIndex(crypto => crypto.name == coin_name)
+            owned_crypto_information[crypto_index].amount += parseFloat(arg.amount)
+        }
     }
     RenderPortfolio();
 
