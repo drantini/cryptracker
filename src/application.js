@@ -193,6 +193,8 @@ function RenderCrypto(){
         <br>
         <span style="position: absolute; top: 5px; left: 5px; color: rgb(100,100,100)">${crypto}</span><img id="${crypto.toLowerCase()}-img" width="48" height="48" >
         <button style="color: white; border: none; position: absolute; top: -8px; right: 3px;" id="remove-${crypto}">X</button><br>
+        <button style="color: white; border: none; position: absolute; top: -8px; right: 23px;" id="notify-${crypto}">!</button><br>
+
         <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block; margin-top: 5px;">
         0.00$
         </h2>
