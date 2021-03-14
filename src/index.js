@@ -26,7 +26,7 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
   /*tray = new Tray(path.join(app.getAppPath(), 'btc_logo.png'))
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Item1', type: 'normal' },

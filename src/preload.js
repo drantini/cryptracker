@@ -7,14 +7,23 @@ var cryptos = []
 contextBridge.exposeInMainWorld(
   'electron',
   {
+
     addPorfolioCoinWindow: () =>{
       const app = electron.remote.app;
       const BrowserWindow = electron.remote.BrowserWindow;
+      const screen = electron.remote.screen;
       const AddWindow = new BrowserWindow({
-        height: 300,
+        height: 200,
         width: 350,
+        webPreferences: {
+          preload: path.join(app.getAppPath(), 'src/preload_app.js'),
+        }
       });
+      var cursor_pos = screen.getCursorScreenPoint()
+      AddWindow.setPosition(cursor_pos.x, cursor_pos.y);
       AddWindow.setResizable(false);
+      AddWindow.webContents.openDevTools();
+
       AddWindow.removeMenu()
       AddWindow.loadFile(path.join(app.getAppPath(), 'src/add.html'));
     },

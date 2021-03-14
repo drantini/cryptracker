@@ -111,13 +111,22 @@ div[class^='crypto-'], div[class*=' crypto-']{
 
   margin-right: 15px;
   margin-left: 220px;
-  height: 450px;
+  height: 475px;
   padding-left: 15px;
 
   display: flex;
   flex-direction:column;
   flex-wrap: wrap;
   align-content: flex-start;
+}
+.footer{
+  background: rgb(50,50,50);
+  position:absolute;
+  color: rgb(155,155,155);
+  margin-left: -15px;
+  margin-top: 35px;
+  width: 800px;
+  height: 39px;
 }
 
 .main{
@@ -161,7 +170,7 @@ input[type=text] {
 }
 div[class^='hchange-'], div[class*=' hchange-']{
   border-radius: 5px;
-  margin: -5px 30px;
+  margin: -15px 30px;
   margin-bottom: 10px;
   padding: 2px 0px;
   background: rgb(65,65,65);

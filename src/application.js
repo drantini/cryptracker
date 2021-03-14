@@ -9,7 +9,7 @@ const add_port_coin = document.getElementById('add-portfolio-coin')
 add_btn.onclick = addCryptoCurrency;
 usd_btn.onclick = setUSD;
 eur_btn.onclick = setEUR;
-add_port_coin.onclick = addPortfolioCoin;
+add_port_coin.onclick = addPortfolioCoinPopup;
 
 var cryptos = ['BTC']
 var currency = 'USD'
@@ -45,6 +45,7 @@ async function doParse(){
         const change_id = document.getElementById(`${lower_case}-change`)
         const day_change = document.getElementById(`${lower_case}-box-daychange`)
         const day_change_text = document.getElementById(`${lower_case}-daychange-text`)
+        const image = document.getElementById(`${lower_case}-img`)
         if (!prices.RAW[crypto]){
             const index = cryptos.indexOf(crypto)
             if (index > -1){
@@ -55,8 +56,7 @@ async function doParse(){
             doParse()
         }
         const price = prices.RAW[crypto][currency]["PRICE"]
-
-
+        image.src = "https://www.cryptocompare.com" + prices.RAW[crypto][currency]["IMAGEURL"]
         
 
         let old_information = crypto_information.find(crypto => crypto.name == lower_case)
@@ -91,7 +91,7 @@ async function doParse(){
         }
         day_change_text.innerHTML = percentage + "%"
 
-        price_id.innerHTML = (price.countDecimals() > 2 ? `${price.toFixed(5)}` : `${price}`) + (currency == 'USD' ? '$': '€')
+        price_id.innerHTML = (price.countDecimals() > 5 ? `${price.toFixed(5)}` : price.countDecimals() > 2 ? `${price.toFixed(price.countDecimals())}` : `${price}`) + (currency == 'USD' ? '$': '€')
         if (old_information == null){
             let information = {
                 "name": lower_case,
@@ -120,8 +120,9 @@ function RenderCrypto(){
         
         document.getElementById('cryptos').innerHTML += `<div class="crypto-${crypto}">
         <br>
-        <span>${crypto}</span>    <button style="color: white; border: none; position: absolute; top: -5px; right: 5px;" id="remove-${crypto}">X</button><br>
-        <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block;">
+        <span style="position: absolute; top: 5px; left: 5px; color: rgb(100,100,100)">${crypto}</span><img id="${crypto.toLowerCase()}-img" width="48" height="48" >
+        <button style="color: white; border: none; position: absolute; top: -8px; right: 3px;" id="remove-${crypto}">X</button><br>
+        <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block; margin-top: 5px;">
         0.00$
         </h2>
         <small id="${crypto.toLowerCase()}-change"></small>
@@ -165,6 +166,6 @@ function addCryptoCurrency(){
     doParse()
 
 }
-function addPortfolioCoin(){
+function addPortfolioCoinPopup(){
     window.electron.addPorfolioCoinWindow();
 }
