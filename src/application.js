@@ -33,6 +33,7 @@ function removeCrypto(code){
 }
 
 function addPorfolioCoinWindow(){
+    
     const app = electron.remote.app;
     const BrowserWindow = electron.remote.BrowserWindow;
     const screen = electron.remote.screen;
