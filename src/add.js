@@ -11,7 +11,11 @@ add_btn.addEventListener('click', function(){
         return;
     }
     var name_of_coin = name_coin.value.toString();
-    ipc.send("new-coin", name_of_coin);
+    var request = {
+        coin: name_of_coin,
+        amount: amount_coin.value
+    }
+    ipc.send("new-coin", request);
     var window = remote.getCurrentWindow();
     window.close();
 

@@ -16,11 +16,16 @@ const path = require('path')
 const ipc = electron.ipcRenderer;
 
 var cryptos = ['BTC']
+var owned_cryptos = []
 var currency = 'USD'
 
 let crypto_information = [
     
 ]
+let owned_crypto_information = [
+
+]
+
 Number.prototype.countDecimals = function () {
     if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
     return this.toString().split(".")[1].length || 0; 
@@ -33,7 +38,7 @@ function removeCrypto(code){
 }
 
 function addPorfolioCoinWindow(){
-    
+
     const app = electron.remote.app;
     const BrowserWindow = electron.remote.BrowserWindow;
     const screen = electron.remote.screen;
@@ -49,20 +54,19 @@ function addPorfolioCoinWindow(){
     var cursor_pos = screen.getCursorScreenPoint()
     AddWindow.setPosition(cursor_pos.x, cursor_pos.y);
     AddWindow.setResizable(false);
-    AddWindow.webContents.openDevTools();
+    //AddWindow.webContents.openDevTools();
 
     AddWindow.removeMenu()
     AddWindow.loadFile(path.join(app.getAppPath(), 'src/add.html'));
   }
 
-function parsePrices(){
+function parsePrices(cryptos_to_parse){
     return new Promise((resolve,reject) => {
         var result = "";
-        console.log("parsePrices()");
         const net = electron.remote.net; 
         var path = "data/pricemultifull?fsyms=BTC"
-        cryptos.forEach(crypto => {
-          path += "," + crypto
+        cryptos_to_parse.forEach(crypto => {
+          path += "," + crypto.toUpperCase()
         })
         path += "&tsyms=USD,EUR"
         const request = net.request({ 
@@ -92,18 +96,20 @@ async function setUSD(){
     //clear the information due to currency change
     crypto_information = []
     doParse()
-
+    UpdatePortfolio()
 }
 async function setEUR(){
     currency = 'EUR'
     //clear the information due to currency change
     crypto_information = []
     doParse()
+    UpdatePortfolio()
+
 }
 
 async function doParse(){
  
-    const prices = await parsePrices();
+    const prices = await parsePrices(cryptos);
     cryptos.forEach(crypto => {
         var lower_case = crypto.toLowerCase()
         const price_id = document.getElementById(`${lower_case}-price`)
@@ -216,6 +222,51 @@ function RenderCrypto(){
     })
 
 }
+function RenderPortfolio(){
+    document.getElementById('owned-coins').innerHTML = ''
+
+    owned_cryptos.forEach(crypto => {
+        document.getElementById('owned-coins').innerHTML += `            
+        <div class="owned-${crypto}">
+            <div>
+            <img id="${crypto}-img-port" width="22" height="22" >
+            <span id="${crypto}-owned-name" style="position: relative; top:-5px;">Parsing..</span>
+            </div>
+            
+            <div style="text-align: right; position: relative;  top: -10px">
+            <small id="${crypto}-owned-amount">NaN</small><br>
+            <span id="${crypto}-owned-price">NaN$</span>
+            </div>
+            
+        </div><br>`
+    })
+    UpdatePortfolio()
+
+}
+async function UpdatePortfolio(){
+    const prices = await parsePrices(owned_cryptos);
+    var balance = 0;
+    owned_cryptos.forEach(crypto => {
+        var image = document.getElementById(`${crypto}-img-port`)
+        var name = document.getElementById(`${crypto}-owned-name`)
+        var amount = document.getElementById(`${crypto}-owned-amount`)
+        var price_together = document.getElementById(`${crypto}-owned-price`)
+        var upper_case = crypto.toUpperCase()
+        let owned_index = owned_crypto_information.findIndex(crypto_buf => crypto_buf.name == crypto)
+        amount.innerHTML = owned_crypto_information[owned_index].amount
+        var price = (parseFloat(owned_crypto_information[owned_index].amount)*prices.RAW[upper_case][currency]["PRICE"]).toFixed(2)
+        price_together.innerHTML = price + (currency == 'USD' ? '$': '€')
+        balance += parseFloat(price);
+
+        image.src = "https://www.cryptocompare.com" + prices.RAW[upper_case][currency]["IMAGEURL"];
+        name.innerHTML = upper_case
+    })
+    var portfolio_balance = document.getElementById('balance')
+    portfolio_balance.innerHTML = balance + (currency == 'USD' ? '$': '€')
+
+}
+setInterval(UpdatePortfolio, 7 * 1000)
+
 RenderCrypto()
 function addCryptoCurrency(){
     if (crypto_code.value == ""){
@@ -231,7 +282,22 @@ function addCryptoCurrency(){
 function addPortfolioCoinPopup(){
     addPorfolioCoinWindow();
 }
-ipc.on("new-coin", function(event, arg){
-    console.log('here')
-    console.log(arg.toString())
+ipc.on("new-coin-parse", function(event, arg){
+
+    let coin_name = arg.coin.toString()
+    let old_information = owned_crypto_information.find(crypto => crypto.name == coin_name)
+    if (old_information == null){
+        let information = {
+            "name": coin_name,
+            "amount": parseFloat(arg.amount)
+        }
+        owned_cryptos.push(coin_name)
+
+        owned_crypto_information.push(information)
+    }else{
+        crypto_index = owned_crypto_information.findIndex(crypto => crypto.name == coin_name)
+        owned_crypto_information[crypto_index].amount += parseFloat(arg.amount)
+    }
+    RenderPortfolio();
+
 })

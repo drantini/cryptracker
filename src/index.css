@@ -72,6 +72,24 @@ div[class^='crypto-'], div[class*=' crypto-']{
   margin-bottom: 10px;
   margin-right: 10px;
 }
+.coins-owned{
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 180px;
+}
+div[class^='owned-'], div[class*=' owned-']{
+  position: relative; 
+  top: 15px;
+
+  color: white;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width:180px;
+}
 
 .options{
   display:flex;
