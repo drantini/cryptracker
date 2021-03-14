@@ -10,4 +10,4 @@ Electron
 ## Preview
 **NOTE: This is only temporary look of the application. UI overhaul will be soon made.**
 
-![Preview image](https://i.imgur.com/KspliS3.png)
+![Preview image](https://i.imgur.com/hGa8thB.png)
