@@ -12,6 +12,7 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: path.join(app.getAppPath(), "eth_logo.png"),
     webPreferences: {      
       enableRemoteModule: true,
       preload: path.join(app.getAppPath(), 'src/preload.js'),
