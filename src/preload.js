@@ -23,7 +23,7 @@ contextBridge.exposeInMainWorld(
       var result = "";
       console.log("parsePrices()");
       const net = electron.remote.net; 
-      var path = "data/pricemulti?fsyms=BTC"
+      var path = "data/pricemultifull?fsyms=BTC"
       cryptos.forEach(crypto => {
         path += "," + crypto
       })

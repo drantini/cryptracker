@@ -17,6 +17,10 @@ var currency = 'USD'
 let crypto_information = [
     
 ]
+Number.prototype.countDecimals = function () {
+    if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
+    return this.toString().split(".")[1].length || 0; 
+}
 
 async function setUSD(){
     currency = 'USD'
@@ -39,7 +43,20 @@ async function doParse(){
         var lower_case = crypto.toLowerCase()
         const price_id = document.getElementById(`${lower_case}-price`)
         const change_id = document.getElementById(`${lower_case}-change`)
-        const price = prices[crypto][currency]
+        const day_change = document.getElementById(`${lower_case}-box-daychange`)
+        const day_change_text = document.getElementById(`${lower_case}-daychange-text`)
+        if (!prices.RAW[crypto]){
+            const index = cryptos.indexOf(crypto)
+            if (index > -1){
+              cryptos.splice(index, 1)
+            }
+            window.electron.removeCryptoFromList(crypto)
+            RenderCrypto()
+            doParse()
+        }
+        const price = prices.RAW[crypto][currency]["PRICE"]
+
+
         
 
         let old_information = crypto_information.find(crypto => crypto.name == lower_case)
@@ -57,7 +74,7 @@ async function doParse(){
             if (difference != 0){
                 var diff_to_print
                 if (price < 1){
-                    diff_to_print = difference.toFixed(6)
+                    diff_to_print = difference.toFixed(4)
                 }else{
                     diff_to_print = difference.toFixed(2)
                 }
@@ -66,7 +83,15 @@ async function doParse(){
 
 
         }
-        price_id.innerHTML = `${price}` + (currency == 'USD' ? '$': '€')
+        var percentage = prices.RAW[crypto][currency]["CHANGEPCT24HOUR"].toFixed(2)
+        if (percentage < 0){
+            day_change.style.background = "red"
+        }else{
+            day_change.style.background = "green"
+        }
+        day_change_text.innerHTML = percentage + "%"
+
+        price_id.innerHTML = (price.countDecimals() > 2 ? `${price.toFixed(5)}` : `${price}`) + (currency == 'USD' ? '$': '€')
         if (old_information == null){
             let information = {
                 "name": lower_case,
@@ -100,14 +125,22 @@ function RenderCrypto(){
         0.00$
         </h2>
         <small id="${crypto.toLowerCase()}-change"></small>
+        <div class="hchange-${crypto.toLowerCase()}" id="${crypto.toLowerCase()}-box-daychange">
+            <span id="${crypto.toLowerCase()}-daychange-text">0.00%</span>
+        </div>
         </div>
         `
+
+    })
+    cryptos.forEach(crypto => {
         var crypto_tab = document.getElementsByClassName(`crypto-${crypto}`)[0]
         crypto_tab.addEventListener("contextmenu", function(e){
             e.stopPropagation();
             e.preventDefault();
+            console.log("hEhaha")
         })
         document.getElementById(`remove-${crypto}`).addEventListener("click", function(){
+            console.log("here")
             const index = cryptos.indexOf(crypto)
             if (index > -1){
               cryptos.splice(index, 1)

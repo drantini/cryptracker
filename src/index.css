@@ -111,7 +111,7 @@ div[class^='crypto-'], div[class*=' crypto-']{
 
   margin-right: 15px;
   margin-left: 220px;
-  height: 530px;
+  height: 450px;
   padding-left: 15px;
 
   display: flex;
@@ -158,6 +158,14 @@ input[type=text] {
   text-align: center;
   color: white;
   border-bottom: 2px solid rgb(180,180,180);
+}
+div[class^='hchange-'], div[class*=' hchange-']{
+  border-radius: 5px;
+  margin: -5px 30px;
+  margin-bottom: 10px;
+  padding: 2px 0px;
+  background: rgb(65,65,65);
+  color: white;
 }
 ::placeholder{
   color:rgb(155, 155, 155)
