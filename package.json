@@ -1,8 +1,8 @@
 {
   "name": "cryptracker",
   "productName": "cryptracker",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "version": "0.0.9",
+  "description": "Cryptocurrency tracker",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
