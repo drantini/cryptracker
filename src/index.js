@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, Tray } = require('electron');
 const path = require('path');
-
+const electron = require('electron')
+const ipc = electron.ipcMain;
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
@@ -15,7 +16,8 @@ const createWindow = () => {
     icon: path.join(app.getAppPath(), "btc_logo.png"),
     webPreferences: {      
       enableRemoteModule: true,
-      preload: path.join(app.getAppPath(), 'src/preload.js'),
+      nodeIntegration: true,
+      contextIsolation: false,
 
     }
   });
@@ -26,7 +28,7 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
   /*tray = new Tray(path.join(app.getAppPath(), 'btc_logo.png'))
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Item1', type: 'normal' },

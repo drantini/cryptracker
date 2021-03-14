@@ -11,6 +11,10 @@ usd_btn.onclick = setUSD;
 eur_btn.onclick = setEUR;
 add_port_coin.onclick = addPortfolioCoinPopup;
 
+const electron = require('electron')
+const path = require('path')
+const ipc = electron.ipcRenderer;
+
 var cryptos = ['BTC']
 var currency = 'USD'
 
@@ -20,6 +24,66 @@ let crypto_information = [
 Number.prototype.countDecimals = function () {
     if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
     return this.toString().split(".")[1].length || 0; 
+}
+function removeCrypto(code){
+    const index = cryptos.indexOf(code)
+    if (index > -1){
+      cryptos.splice(index, 1)
+    }
+}
+
+function addPorfolioCoinWindow(){
+    const app = electron.remote.app;
+    const BrowserWindow = electron.remote.BrowserWindow;
+    const screen = electron.remote.screen;
+    const AddWindow = new BrowserWindow({
+      height: 200,
+      width: 350,
+      webPreferences: {
+        enableRemoteModule: true,
+        nodeIntegration: true,
+        contextIsolation: false,
+      }
+    });
+    var cursor_pos = screen.getCursorScreenPoint()
+    AddWindow.setPosition(cursor_pos.x, cursor_pos.y);
+    AddWindow.setResizable(false);
+    AddWindow.webContents.openDevTools();
+
+    AddWindow.removeMenu()
+    AddWindow.loadFile(path.join(app.getAppPath(), 'src/add.html'));
+  }
+
+function parsePrices(){
+    return new Promise((resolve,reject) => {
+        var result = "";
+        console.log("parsePrices()");
+        const net = electron.remote.net; 
+        var path = "data/pricemultifull?fsyms=BTC"
+        cryptos.forEach(crypto => {
+          path += "," + crypto
+        })
+        path += "&tsyms=USD,EUR"
+        const request = net.request({ 
+          method: 'GET', 
+          protocol: 'https:', 
+          hostname: 'min-api.cryptocompare.com',
+  
+          path: path,
+          redirect: 'follow'
+        }); 
+        request.on('response', (response) => {
+  
+            response.on('data', (chunk) => {
+              var parsed = JSON.parse(chunk.toString())
+              resolve(parsed);
+            })
+        })
+        request.on('finish', () => { 
+        }); 
+        request.setHeader('Content-Type', 'application/json'); 
+        request.end();
+        })
 }
 
 async function setUSD(){
@@ -37,8 +101,8 @@ async function setEUR(){
 }
 
 async function doParse(){
-
-    const prices = await window.electron.parsePrices();
+ 
+    const prices = await parsePrices();
     cryptos.forEach(crypto => {
         var lower_case = crypto.toLowerCase()
         const price_id = document.getElementById(`${lower_case}-price`)
@@ -51,7 +115,7 @@ async function doParse(){
             if (index > -1){
               cryptos.splice(index, 1)
             }
-            window.electron.removeCryptoFromList(crypto)
+            removeCrypto(crypto)
             RenderCrypto()
             doParse()
         }
@@ -138,15 +202,13 @@ function RenderCrypto(){
         crypto_tab.addEventListener("contextmenu", function(e){
             e.stopPropagation();
             e.preventDefault();
-            console.log("hEhaha")
         })
         document.getElementById(`remove-${crypto}`).addEventListener("click", function(){
-            console.log("here")
             const index = cryptos.indexOf(crypto)
             if (index > -1){
               cryptos.splice(index, 1)
             }
-            window.electron.removeCryptoFromList(crypto)
+            removeCrypto(crypto)
             RenderCrypto()
             doParse()
         })
@@ -160,12 +222,15 @@ function addCryptoCurrency(){
     }
     var corrected = crypto_code.value.toUpperCase()
     cryptos.push(corrected)
-    window.electron.addCryptoToList(corrected)
     crypto_code.value = ""
     RenderCrypto()
     doParse()
 
 }
 function addPortfolioCoinPopup(){
-    window.electron.addPorfolioCoinWindow();
+    addPorfolioCoinWindow();
 }
+ipc.on("new-coin", function(event, arg){
+    console.log('here')
+    console.log(arg.toString())
+})
