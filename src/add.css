@@ -16,15 +16,22 @@ body {
     padding: 5px;
 }
 button {
-    background: transparent;
-    padding: 4px;
-    margin-top: 10px;
-    font-size: 14px;
-    color: rgb(180,180,180);
-    border: 1px solid rgb(180,180,180);
-    border-radius: 5px;
-  }
-  
+  background: transparent;
+  padding: 4px;
+  margin-top: 10px;
+  font-size: 14px;  
+  border-radius: 5px;
+  color: rgb(180,180,180);
+  border: 1px solid rgb(180,180,180);
+  transition: all 0.25s ease 0s;
+}
+button:hover {
+  letter-spacing: 1px;
+  border-radius: 2px;
+  background: rgb(120,120,120)
+}
+
+
 .main > input{
     padding: 10px;
     margin-bottom: 10px;
@@ -39,3 +46,6 @@ button {
     color: white;
     border-bottom: 2px solid rgb(180,180,180);
   }
+input[type=text]:focus{
+  outline:none !important;
+}

@@ -222,6 +222,7 @@ setInterval(doParse, 6 * 1000)
 
 function RenderCrypto(){
     //remove and re-render
+    //        <button style="color: white; border: none; position: absolute; top: -8px; right: 23px;" id="notify-${crypto}">!</button><br>
     document.getElementById('cryptos').innerHTML = ''
     cryptos.forEach(crypto => {
         
@@ -229,7 +230,7 @@ function RenderCrypto(){
         <br>
         <span style="position: absolute; top: 5px; left: 5px; color: rgb(100,100,100)">${crypto}</span><img id="${crypto.toLowerCase()}-img" width="48" height="48" >
         <button style="color: white; border: none; position: absolute; top: -8px; right: 3px;" id="remove-${crypto}">X</button><br>
-        <button style="color: white; border: none; position: absolute; top: -8px; right: 23px;" id="notify-${crypto}">!</button><br>
+
 
         <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block; margin-top: -10px;">
         0.00$
@@ -248,9 +249,9 @@ function RenderCrypto(){
             e.stopPropagation();
             e.preventDefault();
         })
-        document.getElementById(`notify-${crypto}`).addEventListener("click", function(){
+        /*document.getElementById(`notify-${crypto}`).addEventListener("click", function(){
             addNotifyCoinWindow()
-        })
+        })*/
         document.getElementById(`remove-${crypto}`).addEventListener("click", function(){
             removeCrypto(crypto)
             RenderCrypto()
