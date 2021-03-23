@@ -222,7 +222,21 @@ input[type=text]:focus{
 .dropdown-content a:hover {background-color: #ddd;}
 
 /* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {display: block;}
+.dropdown-content{
+  transition: all 0.25s ease 0s;
+}
+.dropdown > .dropdown-content {
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease;
+}
+.dropdown:hover > .dropdown-content {
+  display: block;
+
+  visibility: visible;
+  opacity: 1;
+}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 /*.dropdown:hover .dropbtn {background-color: #bec0be;} */
