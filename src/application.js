@@ -18,7 +18,7 @@ const path = require('path')
 const ipc = electron.ipcRenderer;
 
 var cryptos = ['BTC']
-var owned_cryptos = []
+var ownedCryptos = []
 var currency = 'USD'
 if (store.get('currency') != null){
     currency = store.get('currency')
@@ -26,16 +26,16 @@ if (store.get('currency') != null){
 if (store.get('cryptos') != null){
     cryptos = store.get('cryptos')
 }
-let crypto_information = [
+let cryptoInformation = [
     
 ]
-let owned_crypto_information = [
+let ownedCryptoInformation = [
 
 ]
 
-if (store.get('owned_cryptos') != null){
-    owned_cryptos = store.get('owned_cryptos')
-    owned_crypto_information = store.get('owned_cryptos_information')
+if (store.get('ownedCryptos') != null){
+    ownedCryptos = store.get('ownedCryptos')
+    ownedCryptoInformation = store.get('ownedCryptos_information')
     RenderPortfolio()
 }
 
@@ -128,7 +128,7 @@ function parsePrices(cryptos_to_parse){
 async function setUSD(){
     currency = 'USD'
     //clear the information due to currency change
-    crypto_information = []
+    cryptoInformation = []
     doParse()
     UpdatePortfolio()
     store.set('currency', currency)
@@ -136,7 +136,7 @@ async function setUSD(){
 async function setEUR(){
     currency = 'EUR'
     //clear the information due to currency change
-    crypto_information = []
+    cryptoInformation = []
     doParse()
     UpdatePortfolio()
     store.set('currency', currency)
@@ -166,7 +166,7 @@ async function doParse(){
         image.src = "https://www.cryptocompare.com" + prices.RAW[crypto][currency]["IMAGEURL"]
         
 
-        let old_information = crypto_information.find(crypto => crypto.name == lower_case)
+        let old_information = cryptoInformation.find(crypto => crypto.name == lower_case)
         if (old_information != null && old_information.price != 0){
             const old_price = old_information.price
 
@@ -204,14 +204,14 @@ async function doParse(){
                 "name": lower_case,
                 "price": price
             }
-            crypto_information.push(information)
+            cryptoInformation.push(information)
         }else{
             // No need to change the information if the price is same
             if (old_information.price == price){
                 return
             }
-            crypto_index = crypto_information.findIndex(crypto => crypto.name == lower_case)
-            crypto_information[crypto_index].price = price
+            crypto_index = cryptoInformation.findIndex(crypto => crypto.name == lower_case)
+            cryptoInformation[crypto_index].price = price
         }
     })
 
@@ -232,7 +232,7 @@ function RenderCrypto(){
         <button style="color: white; border: none; position: absolute; top: -8px; right: 3px;" id="remove-${crypto}">X</button><br>
 
 
-        <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block; margin-top: -10px;">
+        <h2 id="${crypto.toLowerCase()}-price" style="display: inline-block; margin-top: 10px;">
         0.00$
         </h2>
         <small id="${crypto.toLowerCase()}-change"></small>
@@ -263,34 +263,35 @@ function RenderCrypto(){
 function RenderPortfolio(){
     document.getElementById('owned-coins').innerHTML = ''
 
-    owned_cryptos.forEach(crypto => {
+    ownedCryptos.forEach(crypto => {
         document.getElementById('owned-coins').innerHTML += `            
         <div class="owned-${crypto}" id="owned-${crypto}">
             <div>
-            <img id="${crypto}-img-port" width="22" height="22" >
-            <span id="${crypto}-owned-name" style="position: relative; top:-5px;">Parsing..</span>
+            <img id="${crypto}-img-port" width="22" height="22" style="position: relative; top: 5px;" >
+            <span id="${crypto}-owned-name" >Parsing..</span>
+
             </div>
-            
-            <div style="text-align: right; position: relative;  top: -10px">
+            <div style="text-align: right;">
             <small id="${crypto}-owned-amount">NaN</small><br>
             <span id="${crypto}-owned-price">NaN$</span>
             </div>
+
         </div>`
     })
-    owned_cryptos.forEach(crypto => {
+    ownedCryptos.forEach(crypto => {
         document.getElementById(`owned-${crypto}`).addEventListener('contextmenu', function(){
 
-            const index = owned_cryptos.indexOf(crypto)
-            const index_2 = owned_crypto_information.findIndex(crypto_buf => crypto_buf.name == crypto)
+            const index = ownedCryptos.indexOf(crypto)
+            const index_2 = ownedCryptoInformation.findIndex(crypto_buf => crypto_buf.name == crypto)
             if (index > -1){
-                owned_cryptos.splice(index, 1)
+                ownedCryptos.splice(index, 1)
             }
             if (index_2 > -1){
-                owned_crypto_information.splice(index_2, 1)
+                ownedCryptoInformation.splice(index_2, 1)
             }
 
-            store.set('owned_cryptos', owned_cryptos)
-            store.set('owned_cryptos_information', owned_crypto_information)
+            store.set('ownedCryptos', ownedCryptos)
+            store.set('ownedCryptos_information', ownedCryptoInformation)
             RenderPortfolio();
 
         })
@@ -299,20 +300,20 @@ function RenderPortfolio(){
 
 }
 async function UpdatePortfolio(){
-    if (owned_cryptos.length < 1){
+    if (ownedCryptos.length < 1){
         document.getElementById('owned-coins').innerHTML = ''
     }
-    const prices = await parsePrices(owned_cryptos);
-    var balance = 0;
-    owned_cryptos.forEach(crypto => {
+    const prices = await parsePrices(ownedCryptos);
+    let balance = 0;
+    ownedCryptos.forEach(crypto => {
         var image = document.getElementById(`${crypto}-img-port`)
         var name = document.getElementById(`${crypto}-owned-name`)
         var amount = document.getElementById(`${crypto}-owned-amount`)
         var price_together = document.getElementById(`${crypto}-owned-price`)
         var upper_case = crypto.toUpperCase()
-        let owned_index = owned_crypto_information.findIndex(crypto_buf => crypto_buf.name == crypto)
-        amount.innerHTML = owned_crypto_information[owned_index].amount
-        var price = (parseFloat(owned_crypto_information[owned_index].amount)*prices.RAW[upper_case][currency]["PRICE"]).toFixed(2)
+        let owned_index = ownedCryptoInformation.findIndex(crypto_buf => crypto_buf.name == crypto)
+        amount.innerHTML = ownedCryptoInformation[owned_index].amount
+        var price = (parseFloat(ownedCryptoInformation[owned_index].amount)*prices.RAW[upper_case][currency]["PRICE"]).toFixed(2)
         price_together.innerHTML = price + (currency == 'USD' ? '$': '€')
         balance += parseFloat(price);
 
@@ -345,29 +346,29 @@ function addPortfolioCoinPopup(){
 ipc.on("new-coin-parse", function(event, arg){
 
     let coin_name = arg.coin.toString()
-    let old_information = owned_crypto_information.find(crypto => crypto.name == coin_name)
+    let old_information = ownedCryptoInformation.find(crypto => crypto.name == coin_name)
     if (old_information == null){
         let information = {
             "name": coin_name,
             "amount": parseFloat(arg.amount)
         }
-        owned_cryptos.push(coin_name)
-        owned_crypto_information.push(information)
+        ownedCryptos.push(coin_name)
+        ownedCryptoInformation.push(information)
     }else{
-        if (owned_cryptos.findIndex(crypto => crypto == coin_name.toUpperCase()) < 0){
-            owned_cryptos.push(coin_name)
-            crypto_index = owned_crypto_information.findIndex(crypto => crypto.name == coin_name)
-            owned_crypto_information[crypto_index].amount += parseFloat(arg.amount)
+        if (ownedCryptos.findIndex(crypto => crypto == coin_name.toUpperCase()) < 0){
+            ownedCryptos.push(coin_name)
+            crypto_index = ownedCryptoInformation.findIndex(crypto => crypto.name == coin_name)
+            ownedCryptoInformation[crypto_index].amount += parseFloat(arg.amount)
             
         }else{
-            crypto_index = owned_crypto_information.findIndex(crypto => crypto.name == coin_name)
-            owned_crypto_information[crypto_index].amount += parseFloat(arg.amount)
+            crypto_index = ownedCryptoInformation.findIndex(crypto => crypto.name == coin_name)
+            ownedCryptoInformation[crypto_index].amount += parseFloat(arg.amount)
         }
     }
     RenderPortfolio();
 
-    store.set('owned_cryptos', owned_cryptos)
-    store.set('owned_cryptos_information', owned_crypto_information)
+    store.set('ownedCryptos', ownedCryptos)
+    store.set('ownedCryptos_information', ownedCryptoInformation)
 
 })
 
