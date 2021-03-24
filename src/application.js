@@ -329,10 +329,11 @@ setInterval(UpdatePortfolio, 7 * 1000)
 
 RenderCrypto()
 function addCryptoCurrency(){
-    if (crypto_code.value == ""){
+    var corrected = crypto_code.value.toUpperCase()
+
+    if (crypto_code.value == "" || cryptos.indexOf(corrected) != -1){
         return
     }
-    var corrected = crypto_code.value.toUpperCase()
     cryptos.push(corrected)
     crypto_code.value = ""
     RenderCrypto()
