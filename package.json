@@ -1,6 +1,6 @@
 {
-  "name": "cryptracker",
-  "productName": "cryptracker",
+  "name": "CrypTracker",
+  "productName": "CrypTracker",
   "version": "0.0.9",
   "description": "Cryptocurrency tracker",
   "main": "src/index.js",
@@ -21,7 +21,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "cryptracker"
+            "name": "CrypTracker"
           }
         },
         {
@@ -46,6 +46,7 @@
     "electron-reloader": "^1.2.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^7.0.2",
+    "menubar": "^9.1.1",
     "nedb": "^1.8.0",
     "require-from-string": "^2.0.2"
   },

@@ -30,7 +30,10 @@ let cryptoInformation = [
 let ownedCryptoInformation = [
 
 ]
-
+console.log(__dirname)
+//const img = electron.nativeImage.createFromPath(electron + "/btc_logo.png");
+const img = null;
+new Notification('Test', { body: "Hello world", icon: img})
 if (store.get('ownedCryptos') != null){
     ownedCryptos = store.get('ownedCryptos')
     ownedCryptoInformation = store.get('ownedCryptos_information')
@@ -137,10 +140,11 @@ async function setEUR(){
     store.set('currency', currency)
 
 }
-
 async function doParse(){
  
     const prices = await parsePrices(cryptos);
+
+    UpdateTray(prices);
     cryptos.forEach(crypto => {
         var lower_case = crypto.toLowerCase()
         const price_id = document.getElementById(`${lower_case}-price`)
@@ -213,7 +217,7 @@ async function doParse(){
 
 }
 doParse()
-setInterval(doParse, 6 * 1000)
+setInterval(doParse, 9 * 1000)
 
 function RenderCrypto(){
     //remove and re-render
@@ -318,9 +322,26 @@ async function UpdatePortfolio(){
     })
     var portfolio_balance = document.getElementById('balance')
     portfolio_balance.innerHTML = balance.toFixed(2) + (currency == 'USD' ? '$': '€')
+    ipc.send('portfolio-update', portfolio_balance.innerHTML)
 
 }
-setInterval(UpdatePortfolio, 7 * 1000)
+setInterval(UpdatePortfolio, 7 * 1000);
+let idx=0;
+function UpdateTray(prices){
+    let current = cryptos[idx].toUpperCase();
+    let sendObject = {};
+    sendObject.url = "https://www.cryptocompare.com" + prices[current][currency]["IMAGEURL"];
+    const price = prices[current][currency]["PRICE"]
+
+    sendObject.price = (price.countDecimals() > 5 ? `${price.toFixed(5)}` : price.countDecimals() > 2 ? `${price.toFixed(price.countDecimals())}` : `${price}`) + (currency == 'USD' ? '$': '€');
+    sendObject.name = current;
+
+    ipc.send('update-tray', sendObject);
+    idx++;
+    if(idx>Object.keys(prices).length){
+        idx=0;
+    }
+}
 
 RenderCrypto()
 function addCryptoCurrency(){

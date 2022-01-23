@@ -9,20 +9,29 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 
 const Store = require('electron-store')
 Store.initRenderer();
+let tray = null;
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
-    icon: path.join(app.getAppPath(), "btc_logo.png"),
+    icon: path.join(app.getAppPath(), "cryptracker_big.png"),
     webPreferences: {      
       enableRemoteModule: true,
       nodeIntegration: true,
       contextIsolation: false,
-
-    }
+    },
+    title: 'CrypTracker'
   });
   mainWindow.setResizable(true);
+  const img = electron.nativeImage.createFromPath(app.getAppPath() + "/cryptracker_big.png");
+  app.dock.setIcon(img);
+  app.setAboutPanelOptions({
+    applicationName: 'CrypTracker',
+    version: '0.0.9beta',
+    credits: 'Made by drantini'
+
+  })
   mainWindow.removeMenu()
 
   // and load the index.html of the app.
@@ -31,18 +40,29 @@ const createWindow = () => {
     mainWindow.webContents.send("new-coin-parse", arg)
 
   })
-  
-  // Open the DevTools.
-  //mainWindow.webContents.openDevTools();
-  /*tray = new Tray(path.join(app.getAppPath(), 'btc_logo.png'))
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'normal' },
-    { label: 'Item2', type: 'normal' },
-    { label: 'Item3', type: 'normal' },
-    { label: 'Item4', type: 'normal' }
+
+  tray = new Tray(path.join(app.getAppPath(), "/cryptracker_small.png"))
+  let contextMenu = Menu.buildFromTemplate([
+    { label: 'Portfolio - 0.00$', type: 'normal' },
+    { label: 'Separate', type: 'separator'},
+    { role: 'about' },
+    { label: 'Made by drantini', type: 'normal' }
   ])
-  tray.setToolTip('This is my application.')
-  tray.setContextMenu(contextMenu)*/
+  tray.setToolTip('CrypTracker')
+  tray.setTitle('BTC - 36,800$')
+  ipc.on('portfolio-update', (event, arg) => {
+    contextMenu = Menu.buildFromTemplate([
+      { label: 'Portfolio - ' + arg, type: 'normal' },
+      { label: 'Separate', type: 'separator'},
+      ...(process.platform === 'darwin' ? [{ role: 'about' }] : [{}]),
+      { label: 'Made by drantini', type: 'normal' }
+    ])    
+    tray.setContextMenu(contextMenu);
+  })
+  ipc.on('update-tray', (event, arg) => {
+    tray.setTitle(`${arg.name} - ${arg.price}`)
+  })
+  tray.setContextMenu(contextMenu);
 };
 
 // This method will be called when Electron has finished
