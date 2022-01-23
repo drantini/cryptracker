@@ -12,7 +12,7 @@ Store.initRenderer();
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 900,
     height: 600,
     icon: path.join(app.getAppPath(), "btc_logo.png"),
     webPreferences: {      
@@ -22,7 +22,7 @@ const createWindow = () => {
 
     }
   });
-  mainWindow.setResizable(false);
+  mainWindow.setResizable(true);
   mainWindow.removeMenu()
 
   // and load the index.html of the app.

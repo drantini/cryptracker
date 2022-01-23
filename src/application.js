@@ -1,10 +1,8 @@
 
-const btc_price = document.getElementById('btc-price')
 const crypto_code = document.getElementById('crypto-to-add')
 const add_btn = document.getElementById('add-crypto')
 const usd_btn = document.getElementById('USD-btn')
 const eur_btn = document.getElementById('EUR-btn')
-const port_balance = document.getElementById('balance')
 const add_port_coin = document.getElementById('add-portfolio-coin')
 add_btn.onclick = addCryptoCurrency;
 usd_btn.onclick = setUSD;
@@ -96,7 +94,6 @@ function addNotifyCoinWindow(){
 
 function parsePrices(cryptos_to_parse){
     return new Promise((resolve,reject) => {
-        var result = "";
         const net = electron.remote.net; 
         var path = "data/pricemultifull?fsyms=BTC"
         cryptos_to_parse.forEach(crypto => {
@@ -115,11 +112,9 @@ function parsePrices(cryptos_to_parse){
   
             response.on('data', (chunk) => {
               var parsed = JSON.parse(chunk.toString())
-              resolve(parsed);
+              resolve(parsed.RAW);
             })
         })
-        request.on('finish', () => { 
-        }); 
         request.setHeader('Content-Type', 'application/json'); 
         request.end();
         })
@@ -153,7 +148,7 @@ async function doParse(){
         const day_change = document.getElementById(`${lower_case}-box-daychange`)
         const day_change_text = document.getElementById(`${lower_case}-daychange-text`)
         const image = document.getElementById(`${lower_case}-img`)
-        if (!prices.RAW[crypto]){
+        if (!prices[crypto]){
             const index = cryptos.indexOf(crypto)
             if (index > -1){
               cryptos.splice(index, 1)
@@ -162,8 +157,8 @@ async function doParse(){
             RenderCrypto()
             doParse()
         }
-        const price = prices.RAW[crypto][currency]["PRICE"]
-        image.src = "https://www.cryptocompare.com" + prices.RAW[crypto][currency]["IMAGEURL"]
+        const price = prices[crypto][currency]["PRICE"]
+        image.src = "https://www.cryptocompare.com" + prices[crypto][currency]["IMAGEURL"]
         
 
         let old_information = cryptoInformation.find(crypto => crypto.name == lower_case)
@@ -190,7 +185,7 @@ async function doParse(){
 
 
         }
-        var percentage = prices.RAW[crypto][currency]["CHANGEPCT24HOUR"].toFixed(2)
+        var percentage = prices[crypto][currency]["CHANGEPCT24HOUR"].toFixed(2)
         if (percentage < 0){
             day_change.style.background = "red"
         }else{
@@ -313,11 +308,11 @@ async function UpdatePortfolio(){
         var upper_case = crypto.toUpperCase()
         let owned_index = ownedCryptoInformation.findIndex(crypto_buf => crypto_buf.name == crypto)
         amount.innerHTML = ownedCryptoInformation[owned_index].amount
-        var price = (parseFloat(ownedCryptoInformation[owned_index].amount)*prices.RAW[upper_case][currency]["PRICE"]).toFixed(2)
+        var price = (parseFloat(ownedCryptoInformation[owned_index].amount)*prices[upper_case][currency]["PRICE"]).toFixed(2)
         price_together.innerHTML = price + (currency == 'USD' ? '$': '€')
         balance += parseFloat(price);
 
-        image.src = "https://www.cryptocompare.com" + prices.RAW[upper_case][currency]["IMAGEURL"];
+        image.src = "https://www.cryptocompare.com" + prices[upper_case][currency]["IMAGEURL"];
         name.innerHTML = upper_case
 
     })
