@@ -207,6 +207,12 @@ div[class^='hchange-'], div[class*=' hchange-']{
   text-decoration: none;
   display: block;
 }
+.logo{
+  position: absolute;
+  left: 10px;
+  max-width: 12vw;
+  max-height: 15vh;
+}
 
 button {
   background: transparent;
