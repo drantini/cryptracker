@@ -29,7 +29,8 @@ const createWindow = () => {
   app.setAboutPanelOptions({
     applicationName: 'CrypTracker',
     version: '0.0.9beta',
-    credits: 'Made by drantini'
+    credits: 'Made by drantini',
+    iconPath: path.join(app.getAppPath() + "/cryptracker_medium.png")
 
   })
   mainWindow.removeMenu()

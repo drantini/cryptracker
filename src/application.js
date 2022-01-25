@@ -30,10 +30,9 @@ let cryptoInformation = [
 let ownedCryptoInformation = [
 
 ]
-console.log(__dirname)
-//const img = electron.nativeImage.createFromPath(electron + "/btc_logo.png");
-const img = null;
-new Notification('Test', { body: "Hello world", icon: img})
+console.log(electron.remote.app.getAppPath() + "/cryptracker_big.png")
+const img = electron.nativeImage.createFromPath(electron.remote.app.getAppPath() + "/cryptracker_big.png");
+new Notification('CrypTracker - ETH', { body: "ETH is 9.25% up to 4600.87$", icon: img})
 if (store.get('ownedCryptos') != null){
     ownedCryptos = store.get('ownedCryptos')
     ownedCryptoInformation = store.get('ownedCryptos_information')
@@ -338,7 +337,7 @@ function UpdateTray(prices){
 
     ipc.send('update-tray', sendObject);
     idx++;
-    if(idx>Object.keys(prices).length){
+    if(idx>cryptos.length){
         idx=0;
     }
 }
