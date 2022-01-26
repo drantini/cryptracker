@@ -18,12 +18,7 @@ const ipc = electron.ipcRenderer;
 var cryptos = ['BTC']
 var ownedCryptos = []
 var currency = 'USD'
-if (store.get('currency') != null){
-    currency = store.get('currency')
-}
-if (store.get('cryptos') != null){
-    cryptos = store.get('cryptos')
-}
+
 let cryptoInformation = [
     
 ]
@@ -33,6 +28,12 @@ let ownedCryptoInformation = [
 console.log(electron.remote.app.getAppPath() + "/cryptracker_big.png")
 const img = electron.nativeImage.createFromPath(electron.remote.app.getAppPath() + "/cryptracker_big.png");
 new Notification('CrypTracker - ETH', { body: "ETH is 9.25% up to 4600.87$", icon: img})
+if (store.get('currency') != null){
+    currency = store.get('currency')
+}
+if (store.get('cryptos') != null){
+    cryptos = store.get('cryptos')
+}
 if (store.get('ownedCryptos') != null){
     ownedCryptos = store.get('ownedCryptos')
     ownedCryptoInformation = store.get('ownedCryptos_information')
@@ -337,7 +338,8 @@ function UpdateTray(prices){
 
     ipc.send('update-tray', sendObject);
     idx++;
-    if(idx>cryptos.length){
+
+    if(idx>=cryptos.length){
         idx=0;
     }
 }

@@ -68,7 +68,7 @@ body {
 div[class^='crypto-'], div[class*=' crypto-']{
   background: rgb(50,50,50);
   outline: 1px solid rgb(80,80,80);
-  width: 180px;
+  width: 22vw;
 
   color: white;
   text-align: center;
