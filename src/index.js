@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, Tray } = require('electron');
+const { app, BrowserWindow, Menu, Tray, nativeImage } = require('electron');
 const path = require('path');
 const electron = require('electron')
 const ipc = electron.ipcMain;
@@ -41,8 +41,10 @@ const createWindow = () => {
     mainWindow.webContents.send("new-coin-parse", arg)
 
   })
-
-  tray = new Tray(path.join(app.getAppPath(), "/cryptracker_small.png"))
+  const image = nativeImage.createFromPath(
+    path.join(app.getAppPath(), "cryptracker_transparent_white.png")
+  );
+  tray = new Tray(image.resize({width: 26, height: 26}))
   let contextMenu = Menu.buildFromTemplate([
     { label: 'Portfolio - 0.00$', type: 'normal' },
     { label: 'Separate', type: 'separator'},
